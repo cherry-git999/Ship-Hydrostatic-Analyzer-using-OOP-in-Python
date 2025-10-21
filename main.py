@@ -5,7 +5,7 @@ from fleet import Fleet
 
 def main():
     # Create individual ships
-    ship1 = Ship("Poseidon", 120, 20, 15, 8, 15000)
+    ship1 = Ship("Cherry", 120, 20, 15, 8, 15000)
     ship2 = Ship("Neptune", 95, 16, 12, 6, 8000)
     ship3 = Ship("AquaStar", 60, 10, 8, 4.5, 2500)
 
