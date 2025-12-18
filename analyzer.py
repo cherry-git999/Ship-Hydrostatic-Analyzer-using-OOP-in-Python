@@ -1,30 +1,27 @@
-# analyzer.py
-import math
-import matplotlib.pyplot as plt
+import numpy as np
 
-class HydrostaticAnalyzer:
+class HydroAnalyzer:
     def __init__(self, ship):
         self.ship = ship
+        self.rho = 1025  # seawater density kg/m³
+        self.g = 9.81
 
-    def metacentric_height(self):
-        """Approximate GM (metacentric height)."""
-        KB = 0.53 * self.ship.draft        # center of buoyancy
-        BM = (self.ship.breadth ** 2) / (12 * self.ship.draft)
-        KG = 0.6 * self.ship.depth         # center of gravity
-        GM = KB + BM - KG
-        return round(GM, 3)
+    def displacement(self):
+        return self.ship.length * self.ship.breadth * self.ship.draft * self.rho / 1000
 
-    def stability_curve(self):
-        """Plot Righting Arm (GZ) vs Heel Angle."""
-        GM = self.metacentric_height()
-        angles = list(range(0, 65, 5))
-        GZ = [round(GM * math.sin(math.radians(a)), 3) for a in angles]
+    def buoyant_force(self):
+        return self.displacement() * self.g
 
-        plt.figure(figsize=(7, 4))
-        plt.plot(angles, GZ, marker='o', color='navy', label=f'{self.ship.name}')
-        plt.title(f'Stability Curve - {self.ship.name}', fontsize=14)
-        plt.xlabel("Heel Angle (°)")
-        plt.ylabel("Righting Arm (m)")
-        plt.grid(True)
-        plt.legend()
-        plt.show()
+    def block_coefficient(self):
+        return self.displacement() / (
+            self.ship.length * self.ship.breadth * self.ship.depth * self.rho / 1000
+        )
+
+    def is_floating(self):
+        return self.displacement() >= self.ship.mass
+
+    def gz_curve(self):
+        angles = np.linspace(0, 60, 30)
+        gm = 1.2  # assumed GM
+        gz = gm * np.sin(np.radians(angles))
+        return angles, gz
